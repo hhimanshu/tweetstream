@@ -7,6 +7,11 @@ import javax.websocket.server.ServerEndpoint;
 public class TweetStreamServer {
     @OnMessage
     public String tweets(final String message) {
+        int count = 0;
+        String returnString = "response - ";
+        while (count < 10000) {
+            returnString = returnString + count++;
+        }
         return "Tweets!";
     }
 }

@@ -7,9 +7,10 @@
     <groupId>com.self</groupId>
     <artifactId>tweetstream</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
-        <org.wildfly>8.0.0.Final</org.wildfly>
+        <org.wildfly>8.1.0.Final</org.wildfly>
         <maven.test.skip>false</maven.test.skip>
     </properties>
     <dependencyManagement>
@@ -84,6 +85,12 @@
                 <serverRoot>${project.build.directory}/wildfly-${org.wildfly}</serverRoot>
             </properties>
             <dependencies>
+                <dependency>
+                    <groupId>io.undertow</groupId>
+                    <artifactId>undertow-websockets-jsr</artifactId>
+                    <version>1.0.0.Beta25</version>
+                    <scope>test</scope>
+                </dependency>
                 <dependency>
                     <groupId>io.undertow</groupId>
                     <artifactId>undertow-websockets-jsr</artifactId>
