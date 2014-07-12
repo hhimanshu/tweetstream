@@ -9,9 +9,9 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint("/tweets")
 public class TweetStreamServer {
     @OnMessage
-    public void tweets(final String message, Session client) throws IOException, InterruptedException {
+    public void tweets(final String message, final Session client) throws IOException, InterruptedException {
         int i = 0;
-        for (Session peer : client.getOpenSessions()) {
+        for (final Session peer : client.getOpenSessions()) {
             while (i < 10) {
                 System.out.println("sending ...");
                 peer.getBasicRemote().sendText("Hello");

@@ -40,7 +40,6 @@
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -67,6 +66,17 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.6.4</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-core</artifactId>
+            <version>[4.0,)</version>
+        </dependency>
+        <dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-stream</artifactId>
+            <version>[4.0,)</version>
         </dependency>
     </dependencies>
 
