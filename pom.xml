@@ -78,6 +78,13 @@
             <artifactId>twitter4j-stream</artifactId>
             <version>[4.0,)</version>
         </dependency>
+        <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>hbc-core</artifactId>
+            <!-- or hbc-twitter4j -->
+            <version>2.0.2</version>
+            <!-- or whatever the latest version is -->
+        </dependency>
     </dependencies>
 
     <profiles>
