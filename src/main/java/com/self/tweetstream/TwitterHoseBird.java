@@ -28,47 +28,48 @@ public class TwitterHoseBird {
     private static final String ACCESS_TOKEN = "2618859422-Yof0JYLSEO8reaxLCCUI38lENldnM9NvjHWgpK9";
     private static final String ACCESS_TOKEN_SECRET = "3fdIW91cxFvY80Ci90HWrgC3dfDKxudPsUO9cnvnPeaAh";
 
-    private final BlockingQueue<String> msgQueue;
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterHoseBird.class);
     private static final BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<>(1000);
 
-    public TwitterHoseBird() {
-        msgQueue = new LinkedBlockingQueue<>(100000);
+    private static final BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>(100000);
+    private static Client client;
+
+    public static Client getInstance(final String searchTerm) {
+        if (client == null) {
+            final Hosts hoseBirdHosts = new HttpHosts(Constants.STREAM_HOST);
+            final StatusesFilterEndpoint hoseBirdEndpoint = new StatusesFilterEndpoint();
+
+
+            final List<String> terms = Lists.newArrayList(searchTerm);
+            hoseBirdEndpoint.trackTerms(terms);
+            hoseBirdEndpoint.languages(Lists.newArrayList("en"));
+
+            final Authentication hoseBirdAuth = new OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
+
+            final ClientBuilder builder = new ClientBuilder()
+                    .name("tweetStream-client")                              // optional: mainly for the logs
+                    .hosts(hoseBirdHosts)
+                    .authentication(hoseBirdAuth)
+                    .endpoint(hoseBirdEndpoint)
+                    .processor(new StringDelimitedProcessor(msgQueue));
+
+            synchronized (TwitterHoseBird.class) {
+                client = builder.build();
+            }
+            client.connect();
+        }
+        return client;
     }
 
-    public Client getInstance(final String searchTerm) {
-        final Hosts hoseBirdHosts = new HttpHosts(Constants.STREAM_HOST);
-        final StatusesFilterEndpoint hoseBirdEndpoint = new StatusesFilterEndpoint();
-
-
-        final List<String> terms = Lists.newArrayList(searchTerm);
-        hoseBirdEndpoint.trackTerms(terms);
-        hoseBirdEndpoint.languages(Lists.newArrayList("en"));
-
-        final Authentication hoseBirdAuth = new OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
-
-        final ClientBuilder builder = new ClientBuilder()
-                .name("tweetStream-client")                              // optional: mainly for the logs
-                .hosts(hoseBirdHosts)
-                .authentication(hoseBirdAuth)
-                .endpoint(hoseBirdEndpoint)
-                .processor(new StringDelimitedProcessor(msgQueue))
-                .eventMessageQueue(eventQueue);                          // optional: use this if you want to process client events
-
-        final Client hoseBirdClient = builder.build();
-        hoseBirdClient.connect();
-        return hoseBirdClient;
-    }
-
-    public BlockingQueue<String> getMsgQueue() {
+    public static BlockingQueue<String> getMsgQueue() {
         return msgQueue;
     }
 
     public static void main(final String[] args) throws InterruptedException {
-        final TwitterHoseBird twitterHoseBird = new TwitterHoseBird();
-        final Client client = twitterHoseBird.getInstance("fifa");
+
+        final Client client = getInstance("fifa");
         while (!client.isDone()) {
-            LOGGER.debug(twitterHoseBird.msgQueue.take());
+            LOGGER.debug(msgQueue.take());
         }
     }
 }

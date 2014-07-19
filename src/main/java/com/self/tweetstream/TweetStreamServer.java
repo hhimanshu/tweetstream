@@ -18,6 +18,20 @@ public class TweetStreamServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TweetStreamServer.class);
 
     @OnMessage
+    public void tweets(final String message, final Session session) throws IOException, InterruptedException {
+        System.out.println("session id:" + session.getId() + ", search term: " + message);
+        final Client twitterClient = TwitterHoseBird.getInstance(message);
+        while (!session.getOpenSessions().isEmpty()) {
+            for (final Session s : session.getOpenSessions()) {
+                if (twitterClient.isDone()) {
+                    System.out.println("Twitter Client Done, waiting ...");
+                }
+                s.getBasicRemote().sendText(TwitterHoseBird.getMsgQueue().take());
+            }
+        }
+    }
+/*
+    @OnMessage
     public void tweets(final String message, final Session client) throws IOException, InterruptedException {
         System.out.println("session id:" + client.getId() + ", search term: " + message);
         final TwitterHoseBird twitterHoseBird = new TwitterHoseBird();
@@ -26,11 +40,10 @@ public class TweetStreamServer {
             client.getBasicRemote().sendText(twitterHoseBird.getMsgQueue().take());
         }
     }
+*/
 
     @OnClose
     public void onClose(Session session, CloseReason reason) throws IOException {
-        System.out.println("Closing session: " + session);
-        LOGGER.warn("closing session: {}, reason: {}", session.getId(), reason);
-        session.close();
+        LOGGER.warn("closing session: {}, remaining session: {}", session.getId(), session.getOpenSessions().size());
     }
 }
