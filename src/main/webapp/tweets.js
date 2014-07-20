@@ -3,13 +3,11 @@
 // This example shows how to use setTimeout() to space
 // your markers' animation.
 
-var sre = new google.maps.LatLng(29.9640, 77.5460);
 var map;
-
 function initialize() {
   var mapOptions = {
-    zoom: 2.5,
-    center: sre
+    zoom: 2,
+    center: new google.maps.LatLng(0, 0)
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -48,7 +46,7 @@ function addDynamicMarker(location) {
   setTimeout(function() {
     marker.setMap(null);
     delete marker;
-  }, 4000);
+  }, 2000);
   markers.push(marker);
 }
 google.maps.event.addDomListener(window, 'load', initialize);
