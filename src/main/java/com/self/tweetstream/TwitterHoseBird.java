@@ -1,6 +1,6 @@
 package com.self.tweetstream;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -13,8 +13,8 @@ import com.twitter.hbc.core.Client;
 import com.twitter.hbc.core.Constants;
 import com.twitter.hbc.core.Hosts;
 import com.twitter.hbc.core.HttpHosts;
+import com.twitter.hbc.core.endpoint.Location;
 import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
-import com.twitter.hbc.core.event.Event;
 import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
@@ -29,23 +29,26 @@ public class TwitterHoseBird {
     private static final String ACCESS_TOKEN_SECRET = "3fdIW91cxFvY80Ci90HWrgC3dfDKxudPsUO9cnvnPeaAh";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterHoseBird.class);
-    private static final BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<>(1000);
 
     private static final BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>(100000);
     private static Client client;
 
-    public static Client getInstance(final String searchTerm) {
+    public static Client getInstance() {
         if (client == null) {
             final Hosts hoseBirdHosts = new HttpHosts(Constants.STREAM_HOST);
             final StatusesFilterEndpoint hoseBirdEndpoint = new StatusesFilterEndpoint();
 
 
-            final List<String> terms = Lists.newArrayList(searchTerm);
+/*
+            final List<String> terms = Lists.newArrayList("happy", "sad");
             hoseBirdEndpoint.trackTerms(terms);
+*/
+            final Location location = new Location(new Location.Coordinate(-180, -90), new Location.Coordinate(180, 90));
+            hoseBirdEndpoint.locations(Collections.singletonList(location));
+
             hoseBirdEndpoint.languages(Lists.newArrayList("en"));
 
             final Authentication hoseBirdAuth = new OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
-
             final ClientBuilder builder = new ClientBuilder()
                     .name("tweetStream-client")                              // optional: mainly for the logs
                     .hosts(hoseBirdHosts)
@@ -67,7 +70,7 @@ public class TwitterHoseBird {
 
     public static void main(final String[] args) throws InterruptedException {
 
-        final Client client = getInstance("fifa");
+        final Client client = getInstance();
         while (!client.isDone()) {
             LOGGER.debug(msgQueue.take());
         }
