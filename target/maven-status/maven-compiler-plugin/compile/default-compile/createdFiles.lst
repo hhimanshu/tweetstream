@@ -1,0 +1,5 @@
+com/self/tweetstream/TweetStreamServer.class
+com/self/tweetstream/TweetStreamClient.class
+com/self/tweetstream/TwitterFilter.class
+com/self/tweetstream/TwitterFilter$1.class
+com/self/tweetstream/TwitterHoseBird.class
