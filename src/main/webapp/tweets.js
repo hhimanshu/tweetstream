@@ -16,7 +16,7 @@ function initialize() {
 }
 
 function dropPins() {
-  var connection = new WebSocket('ws://127.0.0.1:8080/tweetstream/tweets');
+  var connection = new WebSocket('ws://' + document.location.host + document.location.pathname + 'tweets');
   connection.onopen = function() {
     connection.send('brazil');
   };
