@@ -4,7 +4,7 @@
 // your markers' animation.
 
 var map;
-var port = (document.location.host.indexOf('localhost') >= 0) ? undefined : 8000;
+var port = (document.location.host.indexOf('localhost') >= 0) ? undefined : ':8000';
 var url = (port !== undefined) ? 'ws://' + document.location.host + port + document.location.pathname + 'tweets' :
   'ws://' + document.location.host + document.location.pathname + 'tweets';
 function initialize() {
