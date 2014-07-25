@@ -37,6 +37,7 @@ public class TweetStreamServer {
                     TwitterHoseBird.getMsgQueue().poll(2, TimeUnit.SECONDS);
                 }
                 s.getAsyncRemote().sendText(TwitterHoseBird.getMsgQueue().take());
+                TwitterHoseBird.getMsgQueue().clear();
             }
         }
     }
