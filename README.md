@@ -2,3 +2,5 @@ tweetstream [![Build Status](https://travis-ci.org/hhimanshu/tweetstream.svg?bra
 ===========
 
 Stream Tweets from Twitter using WebSockets API. 
+
+![TweetStream](tweetstream.gif)
